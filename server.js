@@ -7,13 +7,14 @@ var server = prerender({
 	messageTimeout: process.env.PHANTOM_CLUSTER_MESSAGE_TIMEOUT
     });
 
+server.use({
+    onPhantomPageCreate: function(phantom, req, res, next) {
+        req.prerender.page.set('customHeaders', { "Accept-Language": "zh-TW" });
+        next();
+    }
+});
 
 server.use(prerender.removeScriptTags());
-
-if (process.env.BASIC_AUTH_USERNAME) {
-    server.use(prerender.basicAuth());
-}
-
 server.use(prerender.inMemoryHtmlCache());
 
 //server.use(prerender.blacklist());
